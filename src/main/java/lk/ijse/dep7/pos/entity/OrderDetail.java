@@ -1,13 +1,8 @@
 package lk.ijse.dep7.pos.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @AllArgsConstructor
@@ -22,6 +17,20 @@ public class OrderDetail implements SuperEntity {
     private BigDecimal unitPrice;
     @Column(nullable = false)
     private int qty;
+    @ManyToOne
+    @JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @Setter(AccessLevel.NONE)
+    private Order order;
+    @ManyToOne
+    @JoinColumn(name = "item_code", referencedColumnName = "code", insertable = false, updatable = false)
+    @Setter(AccessLevel.NONE)
+    private Item item;
+
+    public OrderDetail(OrderDetailPK orderDetailPK, BigDecimal unitPrice, int qty) {
+        this.orderDetailPK = orderDetailPK;
+        this.unitPrice = unitPrice;
+        this.qty = qty;
+    }
 
     public OrderDetail(String orderId, String itemCode, BigDecimal unitPrice, int qty) {
         this.orderDetailPK = new OrderDetailPK(orderId, itemCode);

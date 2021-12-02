@@ -1,6 +1,13 @@
 package lk.ijse.dep7.pos.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Table(name = "customer")
+@Entity
 public class Customer implements SuperEntity {
+    @Id
     private String id;
     private String name;
     private String address;

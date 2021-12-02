@@ -1,57 +1,31 @@
 package lk.ijse.dep7.pos.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Table(name = "order_detail")
+@Entity
 public class OrderDetail implements SuperEntity {
+    @EmbeddedId
     private OrderDetailPK orderDetailPK;
+    @Column(name = "unit_price", nullable = false)
     private BigDecimal unitPrice;
+    @Column(nullable = false)
     private int qty;
-
-    public OrderDetail() {
-    }
-
-    public OrderDetail(OrderDetailPK orderDetailPK, BigDecimal unitPrice, int qty) {
-        this.orderDetailPK = orderDetailPK;
-        this.unitPrice = unitPrice;
-        this.qty = qty;
-    }
 
     public OrderDetail(String orderId, String itemCode, BigDecimal unitPrice, int qty) {
         this.orderDetailPK = new OrderDetailPK(orderId, itemCode);
         this.unitPrice = unitPrice;
         this.qty = qty;
-    }
-
-    public OrderDetailPK getOrderDetailPK() {
-        return orderDetailPK;
-    }
-
-    public void setOrderDetailPK(OrderDetailPK orderDetailPK) {
-        this.orderDetailPK = orderDetailPK;
-    }
-
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-    public int getQty() {
-        return qty;
-    }
-
-    public void setQty(int qty) {
-        this.qty = qty;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderDetail{" +
-                "orderDetailPK=" + orderDetailPK +
-                ", unitPrice=" + unitPrice +
-                ", qty=" + qty +
-                '}';
     }
 }

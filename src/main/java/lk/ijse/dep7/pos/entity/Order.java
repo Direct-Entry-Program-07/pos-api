@@ -8,7 +8,6 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "`order`")
 @Entity
 public class Order implements SuperEntity {

@@ -16,23 +16,23 @@ public class CustomerDAOImpl2 implements CustomerDAO {
     }
 
     @Override
-    public void save(Customer entity) throws Exception {
+    public void save(Customer entity) {
         session.save(entity);
     }
 
     @Override
-    public void update(Customer entity) throws Exception {
+    public void update(Customer entity) {
         session.update(entity);
     }
 
     @Override
-    public void deleteById(String key) throws Exception {
+    public void deleteById(String key)  {
         Customer customer = session.get(Customer.class, key);
         session.delete(customer);
     }
 
     @Override
-    public Optional<Customer> findById(String key) throws Exception {
+    public Optional<Customer> findById(String key)  {
         Customer customer = session.find(Customer.class, key);
         if (customer == null){
             return Optional.empty();
@@ -42,29 +42,29 @@ public class CustomerDAOImpl2 implements CustomerDAO {
     }
 
     @Override
-    public List<Customer> findAll() throws Exception {
+    public List<Customer> findAll()  {
         return session.createQuery("FROM Customer").list();
     }
 
     @Override
-    public long count() throws Exception {
+    public long count()  {
         return session.createQuery("SELECT COUNT(c) FROM Customer c", Long.class).uniqueResult();
     }
 
     @Override
-    public boolean existsById(String key) throws Exception {
+    public boolean existsById(String key)  {
         return findById(key).isPresent();
     }
 
     @Override
-    public List<Customer> findAll(int page, int size) throws Exception {
+    public List<Customer> findAll(int page, int size) {
         return session.createNativeQuery("SELECT * FROM customer LIMIT ?1 OFFSET ?2")
                 .setParameter(1, page)
                 .setParameter(2, size).addEntity(Customer.class).list();
     }
 
     @Override
-    public String getLastCustomerId() throws Exception {
+    public String getLastCustomerId()  {
         return session.createNativeQuery("SELECT id FROM customer ORDER BY id DESC LIMIT 1", String.class).uniqueResult();
     }
 }

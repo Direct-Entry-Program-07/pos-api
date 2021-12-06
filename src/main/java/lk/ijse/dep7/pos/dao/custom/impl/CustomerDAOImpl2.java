@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class CustomerDAOImpl2 implements CustomerDAO {
 
-    private Session session;
+    private final Session session;
 
     public CustomerDAOImpl2(Session session) {
         this.session = session;
@@ -26,33 +26,33 @@ public class CustomerDAOImpl2 implements CustomerDAO {
     }
 
     @Override
-    public void deleteById(String key)  {
+    public void deleteById(String key) {
         Customer customer = session.get(Customer.class, key);
         session.delete(customer);
     }
 
     @Override
-    public Optional<Customer> findById(String key)  {
+    public Optional<Customer> findById(String key) {
         Customer customer = session.find(Customer.class, key);
-        if (customer == null){
+        if (customer == null) {
             return Optional.empty();
-        }else{
+        } else {
             return Optional.of(customer);
         }
     }
 
     @Override
-    public List<Customer> findAll()  {
+    public List<Customer> findAll() {
         return session.createQuery("FROM Customer").list();
     }
 
     @Override
-    public long count()  {
+    public long count() {
         return session.createQuery("SELECT COUNT(c) FROM Customer c", Long.class).uniqueResult();
     }
 
     @Override
-    public boolean existsById(String key)  {
+    public boolean existsById(String key) {
         return findById(key).isPresent();
     }
 
@@ -64,7 +64,7 @@ public class CustomerDAOImpl2 implements CustomerDAO {
     }
 
     @Override
-    public String getLastCustomerId()  {
+    public String getLastCustomerId() {
         return session.createNativeQuery("SELECT id FROM customer ORDER BY id DESC LIMIT 1", String.class).uniqueResult();
     }
 }

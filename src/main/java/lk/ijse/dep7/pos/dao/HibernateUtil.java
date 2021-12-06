@@ -1,5 +1,9 @@
 package lk.ijse.dep7.pos.dao;
 
+import lk.ijse.dep7.pos.entity.Customer;
+import lk.ijse.dep7.pos.entity.Item;
+import lk.ijse.dep7.pos.entity.Order;
+import lk.ijse.dep7.pos.entity.OrderDetail;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
@@ -17,6 +21,10 @@ public class HibernateUtil {
                 .build();
 
         Metadata metadata = new MetadataSources(standardRegistry)
+                .addAnnotatedClass(Customer.class)
+                .addAnnotatedClass(Item.class)
+                .addAnnotatedClass(Order.class)
+                .addAnnotatedClass(OrderDetail.class)
                 .getMetadataBuilder()
                 .applyImplicitNamingStrategy(ImplicitNamingStrategyJpaCompliantImpl.INSTANCE)
                 .build();

@@ -26,10 +26,10 @@ public abstract class CrudDAOImpl<T extends SuperEntity, ID extends Serializable
 //        Customer customer = session.get(Customer.class, key);
 //        session.delete(customer);
 //
-//        Item item = session.find(Item.class, key);
+//        Item item = session.get(Item.class, key);
 //        session.delete(item);
 
-        T entity = session.find(T, key);
+        T entity = session.get(T, key);
         session.delete(entity);
     }
 
@@ -62,7 +62,7 @@ public abstract class CrudDAOImpl<T extends SuperEntity, ID extends Serializable
 //        return session.createQuery("FROM Customer").list();
 //        return session.createQuery("FROM Item i").list();
 
-        return session.createQuery("FROM T").list();
+        return session.createQuery("FROM " + T).list();
     }
 
     @Override
@@ -92,10 +92,15 @@ public abstract class CrudDAOImpl<T extends SuperEntity, ID extends Serializable
 //                .addEntity(Item.class)
 //                .list();
 
-        return session.createNativeQuery("SELECT * FROM T LIMIT ?1 OFFSET ?2")
-                .setParameter(1, size)
-                .setParameter(2, size * (page - 1))
-                .addEntity(T)
+//        return session.createNativeQuery("SELECT * FROM T LIMIT ?1 OFFSET ?2")
+//                .setParameter(1, size)
+//                .setParameter(2, size * (page - 1))
+//                .addEntity(T)
+//                .list();
+
+        return session.createQuery("FROM T")
+                .setFirstResult(size * (page - 1))
+                .setMaxResults(size)
                 .list();
     }
 }

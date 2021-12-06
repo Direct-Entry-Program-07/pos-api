@@ -1,6 +1,7 @@
 package lk.ijse.dep7.pos.dao;
 
 import lk.ijse.dep7.pos.dao.custom.impl.*;
+import org.hibernate.Session;
 
 import java.sql.Connection;
 
@@ -15,18 +16,18 @@ public class DAOFactory {
         return (daoFactory == null) ? (daoFactory = new DAOFactory()) : daoFactory;
     }
 
-    public <T extends SuperDAO> T getDAO(DAOType dao) {
+    public <T extends SuperDAO> T getDAO(DAOType dao, Session session) {
         switch (dao) {
             case CUSTOMER:
-                return (T) new CustomerDAOImpl();
+                return (T) new CustomerDAOImpl(session);
             case ITEM:
-                return (T) new ItemDAOImpl();
+                return (T) new ItemDAOImpl(session);
             case ORDER:
-                return (T) new OrderDAOImpl();
+                return (T) new OrderDAOImpl(session);
             case ORDER_DETAIL:
-                return (T) new OrderDetailDAOImpl();
+                return (T) new OrderDetailDAOImpl(session);
             case QUERY:
-                return (T) new QueryDAOImpl();
+                return (T) new QueryDAOImpl(session);
             default:
                 throw new RuntimeException("Invalid DAO");
         }

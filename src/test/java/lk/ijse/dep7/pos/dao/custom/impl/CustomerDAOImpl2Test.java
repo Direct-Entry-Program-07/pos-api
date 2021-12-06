@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,29 +55,58 @@ class CustomerDAOImpl2Test {
 
     @Test
     void deleteById() {
+        save();
+        assertDoesNotThrow(()-> customerDAO.deleteById("C100"));
+        assertFalse(customerDAO.findById("C100").isPresent());
     }
 
     @Test
     void findById() {
+        save();
+        assertTrue(customerDAO.findById("C100").isPresent());
     }
 
     @Test
     void findAll() {
+        save();
+        Customer manoj = new Customer("C101", "Manoj", "Kadawatha");
+        customerDAO.save(manoj);
+        assertTrue(customerDAO.findAll().size() >= 2);
+        customerDAO.findAll().forEach(System.out::println);
     }
 
     @Test
     void count() {
+        save();
+        long count = customerDAO.count();
+        System.out.println(count);
+        assertTrue(count >= 1);
     }
 
     @Test
     void existsById() {
+        save();
+        assertTrue(customerDAO.existsById("C100"));
     }
 
     @Test
     void testFindAll() {
+        Customer manoj = new Customer("C100", "Manoj", "Kadawatha");
+        Customer pethum = new Customer("C101", "pethum", "Kadawatha");
+        Customer dhanushka = new Customer("C102", "dhanushka", "Kadawatha");
+        customerDAO.save(manoj);
+        customerDAO.save(pethum);
+        customerDAO.save(dhanushka);
+        List<Customer> customers = customerDAO.findAll(1, 2);
+        customers.forEach(System.out::println);
+        assertTrue(customers.size() == 2);
     }
 
     @Test
     void getLastCustomerId() {
+        save();
+        String lastCustomerId = customerDAO.getLastCustomerId();
+        System.out.println(lastCustomerId);
+        assertNotNull(lastCustomerId);
     }
 }

@@ -59,12 +59,12 @@ public class CustomerDAOImpl2 implements CustomerDAO {
     @Override
     public List<Customer> findAll(int page, int size) {
         return session.createNativeQuery("SELECT * FROM customer LIMIT ?1 OFFSET ?2")
-                .setParameter(1, page)
-                .setParameter(2, size).addEntity(Customer.class).list();
+                .setParameter(2, size * (page - 1))
+                .setParameter(1, size).addEntity(Customer.class).list();
     }
 
     @Override
     public String getLastCustomerId() {
-        return session.createNativeQuery("SELECT id FROM customer ORDER BY id DESC LIMIT 1", String.class).uniqueResult();
+        return (String) session.createNativeQuery("SELECT id FROM customer ORDER BY id DESC LIMIT 1").uniqueResult();
     }
 }

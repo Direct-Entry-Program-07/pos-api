@@ -4,20 +4,12 @@ import lk.ijse.dep7.pos.dao.CrudDAOImpl;
 import lk.ijse.dep7.pos.dao.custom.OrderDetailDAO;
 import lk.ijse.dep7.pos.entity.OrderDetail;
 import lk.ijse.dep7.pos.entity.OrderDetailPK;
-import org.hibernate.Session;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 public class OrderDetailDAOImpl extends CrudDAOImpl<OrderDetail, OrderDetailPK> implements OrderDetailDAO {
-
-    private final Session session;
-
-    public OrderDetailDAOImpl(Session session) {
-        super(session);
-        this.session = session;
-    }
 
     @Override
     public Optional<BigDecimal> findOrderTotal(String orderId) throws Exception {

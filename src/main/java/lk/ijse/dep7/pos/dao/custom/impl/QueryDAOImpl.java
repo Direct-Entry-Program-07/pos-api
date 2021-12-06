@@ -12,9 +12,10 @@ import java.util.List;
 
 public class QueryDAOImpl implements QueryDAO {
 
-    private final Session session;
+    private Session session;
 
-    public QueryDAOImpl(Session session) {
+    @Override
+    public void setSession(Session session) {
         this.session = session;
     }
 

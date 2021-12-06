@@ -10,12 +10,16 @@ import java.util.Optional;
 
 public abstract class CrudDAOImpl<T extends SuperEntity, ID extends Serializable> implements CrudDAO<T, ID> {
 
-    private Session session;
+    protected Session session;
     private Class<T> entityClzObj;
 
-    public CrudDAOImpl(Session session) {
-        this.session = session;
+    public CrudDAOImpl() {
         entityClzObj = (Class<T>)(((ParameterizedType)(this.getClass().getGenericSuperclass())).getActualTypeArguments()[0]);
+    }
+
+    @Override
+    public void setSession(Session session) {
+        this.session = session;
     }
 
     @Override

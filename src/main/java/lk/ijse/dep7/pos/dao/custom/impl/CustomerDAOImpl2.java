@@ -1,5 +1,6 @@
 package lk.ijse.dep7.pos.dao.custom.impl;
 
+import lk.ijse.dep7.pos.dao.CrudDAOImpl;
 import lk.ijse.dep7.pos.dao.custom.CustomerDAO;
 import lk.ijse.dep7.pos.entity.Customer;
 import org.hibernate.Session;
@@ -7,7 +8,7 @@ import org.hibernate.Session;
 import java.util.List;
 import java.util.Optional;
 
-public class CustomerDAOImpl2 implements CustomerDAO {
+public class CustomerDAOImpl2 extends CrudDAOImpl<Customer, String> implements CustomerDAO {
 
     private final Session session;
 

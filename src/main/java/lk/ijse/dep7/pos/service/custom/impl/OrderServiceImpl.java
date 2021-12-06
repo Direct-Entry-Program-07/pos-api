@@ -2,11 +2,11 @@ package lk.ijse.dep7.pos.service.custom.impl;
 
 import lk.ijse.dep7.pos.dao.DAOFactory;
 import lk.ijse.dep7.pos.dao.DAOType;
+import lk.ijse.dep7.pos.dao.HibernateUtil;
 import lk.ijse.dep7.pos.dao.custom.CustomerDAO;
 import lk.ijse.dep7.pos.dao.custom.OrderDAO;
 import lk.ijse.dep7.pos.dao.custom.OrderDetailDAO;
 import lk.ijse.dep7.pos.dao.custom.QueryDAO;
-import lk.ijse.dep7.pos.db.DBConnection;
 import lk.ijse.dep7.pos.dto.ItemDTO;
 import lk.ijse.dep7.pos.dto.OrderDTO;
 import lk.ijse.dep7.pos.dto.OrderDetailDTO;
@@ -18,10 +18,9 @@ import lk.ijse.dep7.pos.service.ServiceType;
 import lk.ijse.dep7.pos.service.custom.CustomerService;
 import lk.ijse.dep7.pos.service.custom.ItemService;
 import lk.ijse.dep7.pos.service.custom.OrderService;
+import org.hibernate.Session;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import static lk.ijse.dep7.pos.service.util.EntityDTOMapper.*;
@@ -43,14 +42,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void saveOrder(OrderDTO order) throws Exception {
 
-        final Connection connection = DBConnection.getConnection();
-        final CustomerService customerService = ServiceFactory.getInstance().getService(ServiceType.CUSTOMER);
-        final ItemService itemService = ServiceFactory.getInstance().getService(ServiceType.ITEM);
-        final String orderId = order.getOrderId();
-        final String customerId = order.getCustomerId();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            orderDAO.setSession(session);
+            orderDetailDAO.setSession(session);
+            customerDAO.setSession(session);
 
-        try {
-            connection.setAutoCommit(false);
+            final CustomerService customerService = ServiceFactory.getInstance().getService(ServiceType.CUSTOMER);
+            final ItemService itemService = ServiceFactory.getInstance().getService(ServiceType.ITEM);
+            final String orderId = order.getOrderId();
+            final String customerId = order.getCustomerId();
+
+            session.beginTransaction();
 
             if (orderDAO.existsById(orderId)) {
                 throw new RuntimeException("Invalid Order ID." + orderId + " already exists");
@@ -70,64 +72,52 @@ public class OrderServiceImpl implements OrderService {
                 itemService.updateItem(item);
             }
 
-            connection.commit();
-
-        } catch (SQLException e) {
-            failedOperationExecutionContext(connection::rollback);
-            throw e;
-        } catch (Throwable t) {
-            failedOperationExecutionContext(connection::rollback);
-            throw t;
-        } finally {
-            failedOperationExecutionContext(() -> connection.setAutoCommit(true));
+            session.getTransaction().commit();
         }
 
     }
 
     @Override
     public long getSearchOrdersCount(String query) throws Exception {
-        return queryDAO.countOrders(query);
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            queryDAO.setSession(session);
+            return queryDAO.countOrders(query);
+        }
     }
 
     @Override
     public List<OrderDTO> searchOrders(String query, int page, int size) throws Exception {
-        // CustomEntity => OrderDTO
-        // List<CustomEntity> => List<OrderDTO>
-        return toOrderDTO2(queryDAO.findOrders(query, page, size));
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            queryDAO.setSession(session);
+            return toOrderDTO2(queryDAO.findOrders(query, page, size));
+        }
     }
 
     @Override
     public OrderDTO searchOrder(String orderId) throws Exception {
-        Order order = orderDAO.findById(orderId).orElseThrow(() -> new RuntimeException("Invalid Order ID: " + orderId));
-        Customer customer = customerDAO.findById(order.getCustomerId()).get();
-        BigDecimal orderTotal = orderDetailDAO.findOrderTotal(orderId).get();
-        List<OrderDetail> orderDetails = orderDetailDAO.findOrderDetailsByOrderId(orderId);
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            queryDAO.setSession(session);
+            customerDAO.setSession(session);
+            orderDetailDAO.setSession(session);
+            Order order = orderDAO.findById(orderId).orElseThrow(() -> new RuntimeException("Invalid Order ID: " + orderId));
+            Customer customer = customerDAO.findById(order.getCustomer().getId()).get();
+            BigDecimal orderTotal = orderDetailDAO.findOrderTotal(orderId).get();
+            List<OrderDetail> orderDetails = orderDetailDAO.findOrderDetailsByOrderId(orderId);
 
-        return toOrderDTO(order, customer, orderTotal, orderDetails);
+            return toOrderDTO(order, customer, orderTotal, orderDetails);
+        }
     }
 
     @Override
     public String generateNewOrderId() throws Exception {
-        String id = orderDAO.getLastOrderId();
-        if (id != null) {
-            return String.format("OD%03d", (Integer.parseInt(id.replace("OD", "")) + 1));
-        } else {
-            return "OD001";
-        }
-
-    }
-
-    private void failedOperationExecutionContext(ExecutionContext context) {
-        try {
-            context.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to save the order", e);
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            orderDAO.setSession(session);
+            String id = orderDAO.getLastOrderId();
+            if (id != null) {
+                return String.format("OD%03d", (Integer.parseInt(id.replace("OD", "")) + 1));
+            } else {
+                return "OD001";
+            }
         }
     }
-
-    @FunctionalInterface
-    interface ExecutionContext {
-        void execute() throws SQLException;
-    }
-
 }

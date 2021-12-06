@@ -3,20 +3,16 @@ package lk.ijse.dep7.pos.service.custom.impl;
 import lk.ijse.dep7.pos.dao.DAOFactory;
 import lk.ijse.dep7.pos.dao.DAOType;
 import lk.ijse.dep7.pos.dao.HibernateUtil;
-import lk.ijse.dep7.pos.dao.custom.CustomerDAO;
-import lk.ijse.dep7.pos.dao.custom.OrderDAO;
-import lk.ijse.dep7.pos.dao.custom.OrderDetailDAO;
-import lk.ijse.dep7.pos.dao.custom.QueryDAO;
-import lk.ijse.dep7.pos.dto.ItemDTO;
+import lk.ijse.dep7.pos.dao.custom.*;
 import lk.ijse.dep7.pos.dto.OrderDTO;
 import lk.ijse.dep7.pos.dto.OrderDetailDTO;
 import lk.ijse.dep7.pos.entity.Customer;
+import lk.ijse.dep7.pos.entity.Item;
 import lk.ijse.dep7.pos.entity.Order;
 import lk.ijse.dep7.pos.entity.OrderDetail;
 import lk.ijse.dep7.pos.service.ServiceFactory;
 import lk.ijse.dep7.pos.service.ServiceType;
 import lk.ijse.dep7.pos.service.custom.CustomerService;
-import lk.ijse.dep7.pos.service.custom.ItemService;
 import lk.ijse.dep7.pos.service.custom.OrderService;
 import org.hibernate.Session;
 
@@ -31,12 +27,14 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDAO orderDAO;
     private final OrderDetailDAO orderDetailDAO;
     private final QueryDAO queryDAO;
+    private final ItemDAO itemDAO;
 
     public OrderServiceImpl() {
         this.orderDAO = DAOFactory.getInstance().getDAO(DAOType.ORDER);
         this.orderDetailDAO = DAOFactory.getInstance().getDAO(DAOType.ORDER_DETAIL);
         this.queryDAO = DAOFactory.getInstance().getDAO(DAOType.QUERY);
         this.customerDAO = DAOFactory.getInstance().getDAO(DAOType.CUSTOMER);
+        this.itemDAO = DAOFactory.getInstance().getDAO(DAOType.ITEM);
     }
 
     @Override
@@ -46,9 +44,9 @@ public class OrderServiceImpl implements OrderService {
             orderDAO.setSession(session);
             orderDetailDAO.setSession(session);
             customerDAO.setSession(session);
+            itemDAO.setSession(session);
 
             final CustomerService customerService = ServiceFactory.getInstance().getService(ServiceType.CUSTOMER);
-            final ItemService itemService = ServiceFactory.getInstance().getService(ServiceType.ITEM);
             final String orderId = order.getOrderId();
             final String customerId = order.getCustomerId();
 
@@ -65,11 +63,11 @@ public class OrderServiceImpl implements OrderService {
             orderDAO.save(fromOrderDTO(order));
 
             for (OrderDetailDTO detail : order.getOrderDetails()) {
-                orderDetailDAO.save(fromOrderDetailDTO(orderId, detail));
+                //orderDetailDAO.save(fromOrderDetailDTO(orderId, detail));
 
-                ItemDTO item = itemService.findItem(detail.getItemCode());
+                Item item = itemDAO.findById(detail.getItemCode()).get();
                 item.setQtyOnHand(item.getQtyOnHand() - detail.getQty());
-                itemService.updateItem(item);
+                //itemService.updateItem(item);
             }
 
             session.getTransaction().commit();

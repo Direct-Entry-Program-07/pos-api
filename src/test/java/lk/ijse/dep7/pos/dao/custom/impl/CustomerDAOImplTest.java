@@ -27,7 +27,7 @@ class CustomerDAOImplTest {
         sessionFactory = HibernateUtil.getSessionFactory();
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
-        customerDAO = new CustomerDAOImpl(session);
+        //customerDAO = new CustomerDAOImpl(session);
     }
 
     @AfterEach

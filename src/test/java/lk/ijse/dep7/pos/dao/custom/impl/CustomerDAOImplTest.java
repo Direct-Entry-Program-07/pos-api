@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CustomerDAOImpl2Test {
+class CustomerDAOImplTest {
 
     private SessionFactory sessionFactory;
     private Session session;
@@ -27,7 +27,7 @@ class CustomerDAOImpl2Test {
         sessionFactory = HibernateUtil.getSessionFactory();
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
-        customerDAO = new CustomerDAOImpl2(session);
+        customerDAO = new CustomerDAOImpl(session);
     }
 
     @AfterEach

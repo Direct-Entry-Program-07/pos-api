@@ -5,6 +5,7 @@ import lk.ijse.dep7.pos.dao.custom.CustomerDAO;
 import lk.ijse.dep7.pos.entity.Customer;
 import org.hibernate.Session;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
 

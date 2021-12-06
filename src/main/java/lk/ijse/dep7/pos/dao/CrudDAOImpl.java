@@ -4,12 +4,18 @@ import lk.ijse.dep7.pos.entity.SuperEntity;
 import org.hibernate.Session;
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
 
 public abstract class CrudDAOImpl<T extends SuperEntity, ID extends Serializable> implements CrudDAO<T, ID> {
 
     private Session session;
+    private Class<T> entityClzObj;
+
+    public CrudDAOImpl() {
+        entityClzObj = (Class<T>)(((ParameterizedType)(this.getClass().getGenericSuperclass())).getActualTypeArguments()[0]);
+    }
 
     @Override
     public void save(T entity) {
@@ -23,54 +29,28 @@ public abstract class CrudDAOImpl<T extends SuperEntity, ID extends Serializable
 
     @Override
     public void deleteById(ID key) {
-//        Customer customer = session.get(Customer.class, key);
-//        session.delete(customer);
-//
-//        Item item = session.get(Item.class, key);
-//        session.delete(item);
-
-        T entity = session.get(T, key);
+        T entity = session.get(entityClzObj, key);
         session.delete(entity);
     }
 
     @Override
     public Optional<T> findById(ID key) {
-//        Customer customer = session.find(Customer.class, key);
-//        if (customer == null) {
-//            return Optional.empty();
-//        } else {
-//            return Optional.of(customer);
-//        }
-
-//        Item item = session.find(Item.class, key);
-//        if (item == null){
-//            return Optional.empty();
-//        }else{
-//            return Optional.of(item);
-//        }
-
-        T entity = session.get(T, key);
-        if (entity == null){
+        T entity = session.get(entityClzObj, key);
+        if (entity == null) {
             return Optional.empty();
-        }else{
+        } else {
             return Optional.of(entity);
         }
     }
 
     @Override
     public List<T> findAll() {
-//        return session.createQuery("FROM Customer").list();
-//        return session.createQuery("FROM Item i").list();
-
-        return session.createQuery("FROM " + T).list();
+        return session.createQuery("FROM " + entityClzObj.getName()).list();
     }
 
     @Override
     public long count() {
-//        return session.createQuery("SELECT COUNT(c) FROM Customer c", Long.class).uniqueResult();
-//        return session.createQuery("SELECT COUNT(i) FROM Item i", Long.class).uniqueResult();
-
-        return session.createQuery("SELECT COUNT(e) FROM T e", Long.class).uniqueResult();
+        return session.createQuery("SELECT COUNT(e) FROM " + entityClzObj.getName() + " e", Long.class).uniqueResult();
     }
 
     @Override
@@ -80,25 +60,7 @@ public abstract class CrudDAOImpl<T extends SuperEntity, ID extends Serializable
 
     @Override
     public List<T> findAll(int page, int size) {
-//        return session.createNativeQuery("SELECT * FROM customer LIMIT ?1 OFFSET ?2")
-//                .setParameter(2, size * (page - 1))
-//                .setParameter(1, size)
-//                .addEntity(Customer.class)
-//                .list();
-
-//        return session.createNativeQuery("SELECT * FROM item LIMIT ?1 OFFSET ?2")
-//                .setParameter(1, size)
-//                .setParameter(2, size * (page - 1))
-//                .addEntity(Item.class)
-//                .list();
-
-//        return session.createNativeQuery("SELECT * FROM T LIMIT ?1 OFFSET ?2")
-//                .setParameter(1, size)
-//                .setParameter(2, size * (page - 1))
-//                .addEntity(T)
-//                .list();
-
-        return session.createQuery("FROM T")
+        return session.createQuery("FROM " + entityClzObj.getName())
                 .setFirstResult(size * (page - 1))
                 .setMaxResults(size)
                 .list();

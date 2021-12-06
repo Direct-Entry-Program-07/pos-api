@@ -13,7 +13,8 @@ public abstract class CrudDAOImpl<T extends SuperEntity, ID extends Serializable
     private Session session;
     private Class<T> entityClzObj;
 
-    public CrudDAOImpl() {
+    public CrudDAOImpl(Session session) {
+        this.session = session;
         entityClzObj = (Class<T>)(((ParameterizedType)(this.getClass().getGenericSuperclass())).getActualTypeArguments()[0]);
     }
 

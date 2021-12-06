@@ -10,6 +10,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CustomerDAOImpl2Test {
@@ -41,6 +43,13 @@ class CustomerDAOImpl2Test {
 
     @Test
     void update() {
+        save();
+        Optional<Customer> c100 = customerDAO.findById("C100");
+        assertTrue(c100.isPresent());
+        Customer customer = c100.get();
+        customer.setAddress("Matara");
+        customerDAO.update(customer);
+        assertTrue(customerDAO.findById("C100").get().getAddress().equals("Matara"));
     }
 
     @Test

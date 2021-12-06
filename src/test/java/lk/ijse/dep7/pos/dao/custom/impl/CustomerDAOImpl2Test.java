@@ -106,6 +106,7 @@ class CustomerDAOImpl2Test {
     void getLastCustomerId() {
         save();
         String lastCustomerId = customerDAO.getLastCustomerId();
+        customerDAO.findAll().forEach(System.out::println);
         System.out.println(lastCustomerId);
         assertNotNull(lastCustomerId);
     }

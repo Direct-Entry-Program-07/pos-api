@@ -65,6 +65,7 @@ public class CustomerDAOImpl2 implements CustomerDAO {
 
     @Override
     public String getLastCustomerId() {
+        session.flush();
         return (String) session.createNativeQuery("SELECT id FROM customer ORDER BY id DESC LIMIT 1").uniqueResult();
     }
 }

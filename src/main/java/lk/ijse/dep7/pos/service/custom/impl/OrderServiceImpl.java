@@ -63,6 +63,8 @@ public class OrderServiceImpl implements OrderService {
             orderDAO.save(fromOrderDTO(order));
 
             for (OrderDetailDTO detail : order.getOrderDetails()) {
+                /* We don't need to save order details explicitly here because we have set bi directional relationship between order and order details */
+                /* When we save order it automatically saves order details too */
                 //orderDetailDAO.save(fromOrderDetailDTO(orderId, detail));
 
                 Item item = itemDAO.findById(detail.getItemCode()).get();
@@ -79,6 +81,7 @@ public class OrderServiceImpl implements OrderService {
     public long getSearchOrdersCount(String query) throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             queryDAO.setSession(session);
+
             return queryDAO.countOrders(query);
         }
     }
@@ -87,6 +90,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> searchOrders(String query, int page, int size) throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             queryDAO.setSession(session);
+
             return toOrderDTO2(queryDAO.findOrders(query, page, size));
         }
     }
@@ -97,6 +101,7 @@ public class OrderServiceImpl implements OrderService {
             queryDAO.setSession(session);
             customerDAO.setSession(session);
             orderDetailDAO.setSession(session);
+
             Order order = orderDAO.findById(orderId).orElseThrow(() -> new RuntimeException("Invalid Order ID: " + orderId));
             Customer customer = customerDAO.findById(order.getCustomer().getId()).get();
             BigDecimal orderTotal = orderDetailDAO.findOrderTotal(orderId).get();
@@ -110,6 +115,7 @@ public class OrderServiceImpl implements OrderService {
     public String generateNewOrderId() throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             orderDAO.setSession(session);
+
             String id = orderDAO.getLastOrderId();
             if (id != null) {
                 return String.format("OD%03d", (Integer.parseInt(id.replace("OD", "")) + 1));

@@ -48,13 +48,15 @@ public class EntityDTOMapper {
     }
 
     public static Order fromOrderDTO(OrderDTO o) {
-        return new Order(o.getOrderId(), Date.valueOf(o.getOrderDate()), new Customer(o.getCustomerId(), o.getCustomerName(), null), fromOrderDetailDTOList(o.getOrderId(), o.getOrderDetails()));
+        // return new Order(o.getOrderId(), Date.valueOf(o.getOrderDate()), o.getCustomerId());
+        return new Order(o.getOrderId(), Date.valueOf(o.getOrderDate()), new Customer(o.getCustomerId(), null, null), fromOrderDetailDTOList(o.getOrderId(), o.getOrderDetails()));
     }
 
     public static OrderDetail fromOrderDetailDTO(String orderId, OrderDetailDTO od) {
         return new OrderDetail(orderId, od.getItemCode(), od.getUnitPrice(), od.getQty());
     }
 
+    /* Added this one */
     public static Set<OrderDetail> fromOrderDetailDTOList(String orderId, List<OrderDetailDTO> orderDetails){
         return orderDetails.stream().map(od-> fromOrderDetailDTO(orderId, od)).collect(Collectors.toSet());
     }

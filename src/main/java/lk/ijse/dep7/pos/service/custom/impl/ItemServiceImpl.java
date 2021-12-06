@@ -25,10 +25,12 @@ public class ItemServiceImpl implements ItemService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
             session.beginTransaction();
+
             if (existItem(item.getCode())) {
                 throw new RuntimeException(item.getCode() + " already exists");
             }
             itemDAO.save(fromItemDTO(item));
+
             session.getTransaction().commit();
         }
     }
@@ -37,6 +39,7 @@ public class ItemServiceImpl implements ItemService {
     public boolean existItem(String code) throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
+
             return itemDAO.existsById(code);
         }
     }
@@ -46,10 +49,12 @@ public class ItemServiceImpl implements ItemService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
             session.beginTransaction();
+
             if (!existItem(item.getCode())) {
                 throw new RuntimeException("There is no such item associated with the id " + item.getCode());
             }
             itemDAO.update(fromItemDTO(item));
+
             session.getTransaction().commit();
         }
     }
@@ -59,10 +64,12 @@ public class ItemServiceImpl implements ItemService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
             session.beginTransaction();
+
             if (!existItem(code)) {
                 throw new RuntimeException("There is no such item associated with the id " + code);
             }
             itemDAO.deleteById(code);
+
             session.getTransaction().commit();
         }
     }
@@ -71,6 +78,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDTO findItem(String code) throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
+
             return toItemDTO(itemDAO.findById(code).orElseThrow(() -> new RuntimeException("There is no such item associated with the id " + code)));
         }
     }
@@ -79,6 +87,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDTO> findAllItems() throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
+
             return toItemDTOList(itemDAO.findAll());
         }
     }
@@ -87,6 +96,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDTO> findAllItems(int page, int size) throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
+
             return toItemDTOList(itemDAO.findAll(page, size));
         }
     }
@@ -95,8 +105,8 @@ public class ItemServiceImpl implements ItemService {
     public String generateNewItemCode() throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
-            String code = itemDAO.getLastItemCode();
 
+            String code = itemDAO.getLastItemCode();
             if (code != null) {
                 int newItemCode = Integer.parseInt(code.replace("I", "")) + 1;
                 return String.format("I%03d", newItemCode);

@@ -25,10 +25,12 @@ public class CustomerServiceImpl implements CustomerService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
             session.beginTransaction();
+
             if (existCustomer(customer.getId())) {
                 throw new RuntimeException(customer.getId() + " already exists");
             }
             customerDAO.save(fromCustomerDTO(customer));
+
             session.getTransaction().commit();
         }
     }
@@ -37,6 +39,7 @@ public class CustomerServiceImpl implements CustomerService {
     public long getCustomersCount() throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
+
             return customerDAO.count();
         }
     }
@@ -45,6 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
     public boolean existCustomer(String id) throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
+
             return customerDAO.existsById(id);
         }
     }
@@ -54,10 +58,12 @@ public class CustomerServiceImpl implements CustomerService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
             session.beginTransaction();
+
             if (!existCustomer(customer.getId())) {
                 throw new RuntimeException("There is no such customer associated with the id " + customer.getId());
             }
             customerDAO.update(fromCustomerDTO(customer));
+
             session.getTransaction().commit();
         }
     }
@@ -67,10 +73,12 @@ public class CustomerServiceImpl implements CustomerService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
             session.beginTransaction();
+
             if (!existCustomer(id)) {
                 throw new RuntimeException("There is no such customer associated with the id " + id);
             }
             customerDAO.deleteById(id);
+
             session.getTransaction().commit();
         }
     }
@@ -79,6 +87,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO findCustomer(String id) throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
+
             return toCustomerDTO(customerDAO.findById(id).orElseThrow(() -> new RuntimeException("There is no such customer associated with the id " + id)));
         }
     }
@@ -87,6 +96,7 @@ public class CustomerServiceImpl implements CustomerService {
     public List<CustomerDTO> findAllCustomers() throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
+
             return toCustomerDTOList(customerDAO.findAll());
         }
     }
@@ -95,6 +105,7 @@ public class CustomerServiceImpl implements CustomerService {
     public List<CustomerDTO> findAllCustomers(int page, int size) throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
+
             return toCustomerDTOList(customerDAO.findAll(page, size));
         }
     }
@@ -103,6 +114,7 @@ public class CustomerServiceImpl implements CustomerService {
     public String generateNewCustomerId() throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
+
             String id = customerDAO.getLastCustomerId();
             if (id != null) {
                 int newCustomerId = Integer.parseInt(id.replace("C", "")) + 1;

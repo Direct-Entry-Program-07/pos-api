@@ -109,5 +109,12 @@ class CustomerDAOImpl2Test {
         customerDAO.findAll().forEach(System.out::println);
         System.out.println(lastCustomerId);
         assertNotNull(lastCustomerId);
+        session.createQuery("DELETE FROM OrderDetail  od").executeUpdate();
+        session.createQuery("DELETE FROM Order o").executeUpdate();
+        int affectedRows = session.createQuery("DELETE FROM Customer c").executeUpdate();
+        assertTrue(affectedRows > 0);
+        lastCustomerId = customerDAO.getLastCustomerId();
+        System.out.println(lastCustomerId);
+        assertNull(lastCustomerId);
     }
 }

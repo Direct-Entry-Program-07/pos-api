@@ -3,6 +3,8 @@ package lk.ijse.dep7.pos.dao.custom.impl;
 import lk.ijse.dep7.pos.dao.custom.QueryDAO;
 import lk.ijse.dep7.pos.db.DBConnection;
 import lk.ijse.dep7.pos.entity.CustomEntity;
+import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,14 +15,15 @@ import java.util.List;
 
 public class QueryDAOImpl implements QueryDAO {
 
-    private final Connection connection;
+    private Session session;
 
-    public QueryDAOImpl() {
-        this.connection = DBConnection.getConnection();
+    public QueryDAOImpl(Session session) {
+        this.session = session
     }
 
     @Override
     public List<HashMap<String, Object>> findOrders(String query) throws Exception {
+
         List<HashMap<String, Object>> orderList = new ArrayList<>();
 
         String[] searchWords = query.split("\\s");
@@ -42,22 +45,22 @@ public class QueryDAOImpl implements QueryDAO {
                     "        OR customer_id LIKE ?\n" +
                     "        OR name LIKE ?)");
         }
-        PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString());
+
+        NativeQuery nativeQuery = session.createNativeQuery(sqlBuilder.toString());
 
         for (int i = 0; i < searchWords.length * 4; i++) {
-            stm.setString(i + 1, "%" + searchWords[(i / 4)] + "%");
+            nativeQuery.setParameter(i + 1, "%" + searchWords[(i / 4)] + "%");
         }
-        ResultSet rst = stm.executeQuery();
 
-        while (rst.next()) {
+        List<Object[]> list = nativeQuery.list();
+
+        for (Object[] record : list) {
             HashMap<String, Object> newRecord = new HashMap<>();
-            newRecord.put("id", rst.getString("id"));
-            newRecord.put("date", rst.getDate("date"));
-            newRecord.put("customer_id", rst.getString("customer_id"));
-            newRecord.put("name", rst.getString("name"));
-            newRecord.put("total", rst.getBigDecimal("total"));
-
-            orderList.add(newRecord);
+            newRecord.put("id", record[0]);
+            newRecord.put("date", record[1]);
+            newRecord.put("customer_id", record[2]);
+            newRecord.put("name", record[3]);
+            newRecord.put("total", record[4]);
         }
 
         return orderList;

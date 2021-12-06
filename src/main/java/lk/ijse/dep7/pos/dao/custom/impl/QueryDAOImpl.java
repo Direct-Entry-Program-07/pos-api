@@ -1,24 +1,21 @@
 package lk.ijse.dep7.pos.dao.custom.impl;
 
 import lk.ijse.dep7.pos.dao.custom.QueryDAO;
-import lk.ijse.dep7.pos.db.DBConnection;
 import lk.ijse.dep7.pos.entity.CustomEntity;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
+import org.hibernate.transform.Transformers;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class QueryDAOImpl implements QueryDAO {
 
-    private Session session;
+    private final Session session;
 
     public QueryDAOImpl(Session session) {
-        this.session = session
+        this.session = session;
     }
 
     @Override
@@ -88,23 +85,21 @@ public class QueryDAOImpl implements QueryDAO {
                     "        OR customer_id LIKE ?\n" +
                     "        OR name LIKE ?)");
         }
-        PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString());
+
+        NativeQuery nativeQuery = session.createNativeQuery(sqlBuilder.toString());
 
         for (int i = 0; i < searchWords.length * 4; i++) {
-            stm.setString(i + 1, "%" + searchWords[(i / 4)] + "%");
+            nativeQuery.setParameter(i + 1, "%" + searchWords[(i / 4)] + "%");
         }
 
-        ResultSet rst = stm.executeQuery();
-        rst.next();
-        return rst.getLong(1);
+        return (long) nativeQuery.uniqueResult();
     }
 
     @Override
-    public List<CustomEntity> findOrders(String query, int page, int size) throws Exception{
-        List<CustomEntity> orderList = new ArrayList<>();
+    public List<CustomEntity> findOrders(String query, int page, int size) throws Exception {
 
         String[] searchWords = query.split("\\s");
-        StringBuilder sqlBuilder = new StringBuilder("SELECT o.*, c.name, order_total.total\n" +
+        StringBuilder sqlBuilder = new StringBuilder("SELECT o.id as orderId, o.date as orderDate, o.customer_id as customerId, c.name as customerName, order_total.total as orderTotal \n" +
                 "FROM `order` o\n" +
                 "         INNER JOIN customer c on o.customer_id = c.id\n" +
                 "         INNER JOIN\n" +
@@ -123,22 +118,17 @@ public class QueryDAOImpl implements QueryDAO {
                     "        OR name LIKE ?)");
         }
         sqlBuilder.append(" LIMIT ? OFFSET ?");
-        PreparedStatement stm = connection.prepareStatement(sqlBuilder.toString());
+
+        NativeQuery nativeQuery = session.createNativeQuery(sqlBuilder.toString());
 
         for (int i = 0; i < searchWords.length * 4; i++) {
-            stm.setString(i + 1, "%" + searchWords[(i / 4)] + "%");
+            nativeQuery.setParameter(i + 1, "%" + searchWords[(i / 4)] + "%");
         }
-        stm.setInt((searchWords.length * 4) + 1, size);
-        stm.setInt((searchWords.length * 4) + 2, size * (page - 1));
-        ResultSet rst = stm.executeQuery();
+        nativeQuery.setParameter((searchWords.length * 4) + 1, size);
+        nativeQuery.setParameter((searchWords.length * 4) + 2, size * (page - 1));
 
-        while (rst.next()) {
-            orderList.add(new CustomEntity(rst.getString("id"), rst.getDate("date"),
-                    rst.getString("customer_id"), rst.getString("name"), rst.getBigDecimal("total")));
-        }
-
-        return orderList;
-
+        return nativeQuery.setResultTransformer(Transformers.aliasToBean(CustomEntity.class))
+                .list();
     }
 
 }

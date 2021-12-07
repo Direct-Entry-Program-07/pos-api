@@ -4,11 +4,15 @@ import lk.ijse.dep7.pos.dao.CrudDAOImpl;
 import lk.ijse.dep7.pos.dao.custom.OrderDetailDAO;
 import lk.ijse.dep7.pos.entity.OrderDetail;
 import lk.ijse.dep7.pos.entity.OrderDetailPK;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+@Scope("prototype")
+@Component
 public class OrderDetailDAOImpl extends CrudDAOImpl<OrderDetail, OrderDetailPK> implements OrderDetailDAO {
 
     @Override

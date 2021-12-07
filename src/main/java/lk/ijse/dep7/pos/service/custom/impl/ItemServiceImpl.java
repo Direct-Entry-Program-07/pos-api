@@ -1,7 +1,5 @@
 package lk.ijse.dep7.pos.service.custom.impl;
 
-import lk.ijse.dep7.pos.dao.DAOFactory;
-import lk.ijse.dep7.pos.dao.DAOType;
 import lk.ijse.dep7.pos.dao.JPAUtil;
 import lk.ijse.dep7.pos.dao.custom.ItemDAO;
 import lk.ijse.dep7.pos.dto.ItemDTO;

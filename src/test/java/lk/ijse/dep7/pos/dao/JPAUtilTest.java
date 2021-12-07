@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class HibernateUtilTest {
+class JPAUtilTest {
 
     @Test
     void getSessionFactory() {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        SessionFactory sessionFactory = JPAUtil.getSessionFactory();
         assertNotNull(sessionFactory);
         Session session = sessionFactory.openSession();
         assertNotNull(session);

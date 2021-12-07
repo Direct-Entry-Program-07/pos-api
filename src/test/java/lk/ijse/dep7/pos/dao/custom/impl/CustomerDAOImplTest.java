@@ -1,6 +1,6 @@
 package lk.ijse.dep7.pos.dao.custom.impl;
 
-import lk.ijse.dep7.pos.dao.HibernateUtil;
+import lk.ijse.dep7.pos.dao.JPAUtil;
 import lk.ijse.dep7.pos.dao.custom.CustomerDAO;
 import lk.ijse.dep7.pos.entity.Customer;
 import org.hibernate.Session;
@@ -24,7 +24,7 @@ class CustomerDAOImplTest {
 
     @BeforeEach
     void setUp() {
-        sessionFactory = HibernateUtil.getSessionFactory();
+        sessionFactory = JPAUtil.getSessionFactory();
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         //customerDAO = new CustomerDAOImpl(session);

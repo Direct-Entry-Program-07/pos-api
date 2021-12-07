@@ -2,7 +2,7 @@ package lk.ijse.dep7.pos.service.custom.impl;
 
 import lk.ijse.dep7.pos.dao.DAOFactory;
 import lk.ijse.dep7.pos.dao.DAOType;
-import lk.ijse.dep7.pos.dao.HibernateUtil;
+import lk.ijse.dep7.pos.dao.JPAUtil;
 import lk.ijse.dep7.pos.dao.custom.ItemDAO;
 import lk.ijse.dep7.pos.dto.ItemDTO;
 import lk.ijse.dep7.pos.service.custom.ItemService;
@@ -22,7 +22,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void saveItem(ItemDTO item) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
             session.beginTransaction();
 
@@ -37,7 +37,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public boolean existItem(String code) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
 
             return itemDAO.existsById(code);
@@ -46,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void updateItem(ItemDTO item) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
             session.beginTransaction();
 
@@ -61,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void deleteItem(String code) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
             session.beginTransaction();
 
@@ -76,7 +76,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDTO findItem(String code) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
 
             return toItemDTO(itemDAO.findById(code).orElseThrow(() -> new RuntimeException("There is no such item associated with the id " + code)));
@@ -85,7 +85,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDTO> findAllItems() throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
 
             return toItemDTOList(itemDAO.findAll());
@@ -94,7 +94,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDTO> findAllItems(int page, int size) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
 
             return toItemDTOList(itemDAO.findAll(page, size));
@@ -103,7 +103,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public String generateNewItemCode() throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             itemDAO.setSession(session);
 
             String code = itemDAO.getLastItemCode();

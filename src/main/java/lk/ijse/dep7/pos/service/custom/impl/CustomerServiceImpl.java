@@ -2,7 +2,7 @@ package lk.ijse.dep7.pos.service.custom.impl;
 
 import lk.ijse.dep7.pos.dao.DAOFactory;
 import lk.ijse.dep7.pos.dao.DAOType;
-import lk.ijse.dep7.pos.dao.HibernateUtil;
+import lk.ijse.dep7.pos.dao.JPAUtil;
 import lk.ijse.dep7.pos.dao.custom.CustomerDAO;
 import lk.ijse.dep7.pos.dto.CustomerDTO;
 import lk.ijse.dep7.pos.service.custom.CustomerService;
@@ -22,7 +22,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void saveCustomer(CustomerDTO customer) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
             session.beginTransaction();
 
@@ -37,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public long getCustomersCount() throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
 
             return customerDAO.count();
@@ -46,7 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public boolean existCustomer(String id) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
 
             return customerDAO.existsById(id);
@@ -55,7 +55,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void updateCustomer(CustomerDTO customer) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
             session.beginTransaction();
 
@@ -70,7 +70,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void deleteCustomer(String id) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
             session.beginTransaction();
 
@@ -85,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO findCustomer(String id) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
 
             return toCustomerDTO(customerDAO.findById(id).orElseThrow(() -> new RuntimeException("There is no such customer associated with the id " + id)));
@@ -94,7 +94,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerDTO> findAllCustomers() throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
 
             return toCustomerDTOList(customerDAO.findAll());
@@ -103,7 +103,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerDTO> findAllCustomers(int page, int size) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
 
             return toCustomerDTOList(customerDAO.findAll(page, size));
@@ -112,7 +112,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public String generateNewCustomerId() throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = JPAUtil.getSessionFactory().openSession()) {
             customerDAO.setSession(session);
 
             String id = customerDAO.getLastCustomerId();

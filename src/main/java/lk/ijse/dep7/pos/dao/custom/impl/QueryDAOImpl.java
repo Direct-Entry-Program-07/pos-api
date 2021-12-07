@@ -6,21 +6,25 @@ import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.Transformers;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class QueryDAOImpl implements QueryDAO {
 
-    private Session session;
+    private EntityManager em;
 
     @Override
-    public void setSession(Session session) {
-        this.session = session;
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
     }
 
     @Override
-    public List<HashMap<String, Object>> findOrders(String query) throws Exception {
+    public List<HashMap<String, Object>> findOrders(String query) {
 
         List<HashMap<String, Object>> orderList = new ArrayList<>();
 
@@ -44,13 +48,13 @@ public class QueryDAOImpl implements QueryDAO {
                     "        OR name LIKE ?)");
         }
 
-        NativeQuery nativeQuery = session.createNativeQuery(sqlBuilder.toString());
+        Query nativeQuery = em.createNativeQuery(sqlBuilder.toString());
 
         for (int i = 0; i < searchWords.length * 4; i++) {
             nativeQuery.setParameter(i + 1, "%" + searchWords[(i / 4)] + "%");
         }
 
-        List<Object[]> list = nativeQuery.list();
+        List<Object[]> list = nativeQuery.getResultList();
 
         for (Object[] record : list) {
             HashMap<String, Object> newRecord = new HashMap<>();
@@ -66,7 +70,7 @@ public class QueryDAOImpl implements QueryDAO {
     }
 
     @Override
-    public long countOrders(String query) throws Exception {
+    public long countOrders(String query) {
         String[] searchWords = query.split("\\s");
         StringBuilder sqlBuilder = new StringBuilder("SELECT COUNT(*) \n" +
                 "FROM `order` o\n" +
@@ -87,17 +91,17 @@ public class QueryDAOImpl implements QueryDAO {
                     "        OR name LIKE ?)");
         }
 
-        NativeQuery nativeQuery = session.createNativeQuery(sqlBuilder.toString());
+        Query nativeQuery = em.createNativeQuery(sqlBuilder.toString());
 
         for (int i = 0; i < searchWords.length * 4; i++) {
             nativeQuery.setParameter(i + 1, "%" + searchWords[(i / 4)] + "%");
         }
 
-        return (long) nativeQuery.uniqueResult();
+        return (long) nativeQuery.getSingleResult();
     }
 
     @Override
-    public List<CustomEntity> findOrders(String query, int page, int size) throws Exception {
+    public List<CustomEntity> findOrders(String query, int page, int size)  {
 
         String[] searchWords = query.split("\\s");
         StringBuilder sqlBuilder = new StringBuilder("SELECT o.id as orderId, o.date as orderDate, o.customer_id as customerId, c.name as customerName, order_total.total as orderTotal \n" +
@@ -120,7 +124,7 @@ public class QueryDAOImpl implements QueryDAO {
         }
         sqlBuilder.append(" LIMIT ? OFFSET ?");
 
-        NativeQuery nativeQuery = session.createNativeQuery(sqlBuilder.toString());
+        Query nativeQuery = em.createNativeQuery(sqlBuilder.toString());
 
         for (int i = 0; i < searchWords.length * 4; i++) {
             nativeQuery.setParameter(i + 1, "%" + searchWords[(i / 4)] + "%");
@@ -128,8 +132,17 @@ public class QueryDAOImpl implements QueryDAO {
         nativeQuery.setParameter((searchWords.length * 4) + 1, size);
         nativeQuery.setParameter((searchWords.length * 4) + 2, size * (page - 1));
 
-        return nativeQuery.setResultTransformer(Transformers.aliasToBean(CustomEntity.class))
-                .list();
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<CustomEntity> orders = new ArrayList<>();
+
+        for (Object[] row : resultList) {
+            orders.add(new CustomEntity((String) row[0],
+                    (Date) row[1],
+                    (String) row[2],
+                    (String) row[3],
+                    (BigDecimal) row[4]));
+        }
+        return orders;
     }
 
 }

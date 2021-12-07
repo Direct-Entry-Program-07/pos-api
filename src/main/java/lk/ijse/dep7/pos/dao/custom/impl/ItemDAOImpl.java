@@ -8,7 +8,7 @@ public class ItemDAOImpl extends CrudDAOImpl<Item, String> implements ItemDAO {
 
     @Override
     public String getLastItemCode() {
-        session.flush();
-        return (String) session.createNativeQuery("SELECT code FROM item ORDER BY code DESC LIMIT 1").uniqueResult();
+        em.flush();
+        return (String) em.createNativeQuery("SELECT code FROM item ORDER BY code DESC LIMIT 1").getSingleResult();
     }
 }

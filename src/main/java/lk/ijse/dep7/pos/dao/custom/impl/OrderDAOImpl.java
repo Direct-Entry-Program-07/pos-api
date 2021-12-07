@@ -7,7 +7,8 @@ import lk.ijse.dep7.pos.entity.Order;
 public class OrderDAOImpl extends CrudDAOImpl<Order, String> implements OrderDAO {
 
     @Override
-    public String getLastOrderId() throws Exception {
-        return (String) session.createNativeQuery("SELECT id FROM `order` ORDER BY id DESC LIMIT 1").uniqueResult();
+    public String getLastOrderId() {
+        em.flush();
+        return (String) em.createNativeQuery("SELECT id FROM `order` ORDER BY id DESC LIMIT 1").getSingleResult();
     }
 }

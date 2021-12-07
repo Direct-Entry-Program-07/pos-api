@@ -2,6 +2,7 @@ package lk.ijse.dep7.pos.service.custom.impl;
 
 import lk.ijse.dep7.pos.dao.DAOFactory;
 import lk.ijse.dep7.pos.dao.DAOType;
+import lk.ijse.dep7.pos.dao.JPAUtil;
 import lk.ijse.dep7.pos.dao.custom.*;
 import lk.ijse.dep7.pos.dto.OrderDTO;
 import lk.ijse.dep7.pos.dto.OrderDetailDTO;
@@ -13,8 +14,8 @@ import lk.ijse.dep7.pos.service.ServiceFactory;
 import lk.ijse.dep7.pos.service.ServiceType;
 import lk.ijse.dep7.pos.service.custom.CustomerService;
 import lk.ijse.dep7.pos.service.custom.OrderService;
-import org.hibernate.Session;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -39,17 +40,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void saveOrder(OrderDTO order) throws Exception {
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            orderDAO.setSession(session);
-            orderDetailDAO.setSession(session);
-            customerDAO.setSession(session);
-            itemDAO.setSession(session);
+        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            orderDAO.setEntityManager(em);
+            orderDetailDAO.setEntityManager(em);
+            customerDAO.setEntityManager(em);
+            itemDAO.setEntityManager(em);
 
             final CustomerService customerService = ServiceFactory.getInstance().getService(ServiceType.CUSTOMER);
             final String orderId = order.getOrderId();
             final String customerId = order.getCustomerId();
 
-            session.beginTransaction();
+            em.getTransaction().begin();
 
             if (orderDAO.existsById(orderId)) {
                 throw new RuntimeException("Invalid Order ID." + orderId + " already exists");
@@ -71,35 +73,44 @@ public class OrderServiceImpl implements OrderService {
                 //itemService.updateItem(item);
             }
 
-            session.getTransaction().commit();
+            em.getTransaction().commit();
+        } finally {
+            em.close();
         }
 
     }
 
     @Override
     public long getSearchOrdersCount(String query) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            queryDAO.setSession(session);
+        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            queryDAO.setEntityManager(em);
 
             return queryDAO.countOrders(query);
+        } finally {
+            em.close();
         }
     }
 
     @Override
     public List<OrderDTO> searchOrders(String query, int page, int size) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            queryDAO.setSession(session);
+        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            queryDAO.setEntityManager(em);
 
             return toOrderDTO2(queryDAO.findOrders(query, page, size));
+        } finally {
+            em.close();
         }
     }
 
     @Override
     public OrderDTO searchOrder(String orderId) throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            queryDAO.setSession(session);
-            customerDAO.setSession(session);
-            orderDetailDAO.setSession(session);
+        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            queryDAO.setEntityManager(em);
+            customerDAO.setEntityManager(em);
+            orderDetailDAO.setEntityManager(em);
 
             Order order = orderDAO.findById(orderId).orElseThrow(() -> new RuntimeException("Invalid Order ID: " + orderId));
             Customer customer = customerDAO.findById(order.getCustomer().getId()).get();
@@ -107,13 +118,16 @@ public class OrderServiceImpl implements OrderService {
             List<OrderDetail> orderDetails = orderDetailDAO.findOrderDetailsByOrderId(orderId);
 
             return toOrderDTO(order, customer, orderTotal, orderDetails);
+        } finally {
+            em.close();
         }
     }
 
     @Override
     public String generateNewOrderId() throws Exception {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            orderDAO.setSession(session);
+        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
+        try {
+            orderDAO.setEntityManager(em);
 
             String id = orderDAO.getLastOrderId();
             if (id != null) {
@@ -121,6 +135,8 @@ public class OrderServiceImpl implements OrderService {
             } else {
                 return "OD001";
             }
+        } finally {
+            em.close();
         }
     }
 }

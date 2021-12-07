@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lk.ijse.dep7.pos.AppInitializer;
 import lk.ijse.dep7.pos.dto.ItemDTO;
 import lk.ijse.dep7.pos.service.custom.ItemService;
 
@@ -26,7 +27,7 @@ public class ItemServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {
-            ItemService itemService = ServiceFactory.getInstance().getService(ServiceType.ITEM);
+            ItemService itemService = AppInitializer.getContext().getBean(ItemService.class);
             String code = req.getParameter("code");
             String page = req.getParameter("page");
             String size = req.getParameter("size");
@@ -89,7 +90,7 @@ public class ItemServlet extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid qty on hand");
                 return;
             }
-            ItemService itemService = ServiceFactory.getInstance().getService(ServiceType.ITEM);
+            ItemService itemService = AppInitializer.getContext().getBean(ItemService.class);
 
             item.setUnitPrice(item.getUnitPrice().setScale(2));
             itemService.saveItem(item);
@@ -131,7 +132,7 @@ public class ItemServlet extends HttpServlet {
             }
 
             try {
-                ItemService itemService = ServiceFactory.getInstance().getService(ServiceType.ITEM);
+                ItemService itemService = AppInitializer.getContext().getBean(ItemService.class);
 
                 itemService.updateItem(item);
                 resp.setContentType("application/json");
@@ -157,7 +158,7 @@ public class ItemServlet extends HttpServlet {
         }
 
         try {
-            ItemService itemService = ServiceFactory.getInstance().getService(ServiceType.ITEM);
+            ItemService itemService = AppInitializer.getContext().getBean(ItemService.class);
             itemService.deleteItem(code);
             resp.setContentType("application/json");
             resp.getWriter().println(jsonb.toJson("OK"));

@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lk.ijse.dep7.pos.AppInitializer;
 import lk.ijse.dep7.pos.dto.CustomerDTO;
 import lk.ijse.dep7.pos.service.custom.CustomerService;
 
@@ -25,7 +26,7 @@ public class CustomerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {
-            CustomerService customerService = ServiceFactory.getInstance().getService(ServiceType.CUSTOMER);
+            CustomerService customerService = AppInitializer.getContext().getBean(CustomerService.class);
             String id = req.getParameter("id");
             String page = req.getParameter("page");
             String size = req.getParameter("size");
@@ -90,7 +91,7 @@ public class CustomerServlet extends HttpServlet {
                 return;
             }
 
-            CustomerService customerService = ServiceFactory.getInstance().getService(ServiceType.CUSTOMER);
+            CustomerService customerService = AppInitializer.getContext().getBean(CustomerService.class);
 
             customerService.saveCustomer(customer);
             resp.setContentType("application/json");
@@ -129,7 +130,7 @@ public class CustomerServlet extends HttpServlet {
             }
 
             try {
-                CustomerService customerService = ServiceFactory.getInstance().getService(ServiceType.CUSTOMER);
+                CustomerService customerService = AppInitializer.getContext().getBean(CustomerService.class);
                 customerService.updateCustomer(customer);
                 resp.setContentType("application/json");
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -155,7 +156,7 @@ public class CustomerServlet extends HttpServlet {
         }
 
         try {
-            CustomerService customerService = ServiceFactory.getInstance().getService(ServiceType.CUSTOMER);
+            CustomerService customerService = AppInitializer.getContext().getBean(CustomerService.class);
 
             customerService.deleteCustomer(id);
             resp.setContentType("application/json");

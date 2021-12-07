@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lk.ijse.dep7.pos.AppInitializer;
 import lk.ijse.dep7.pos.dto.OrderDTO;
 import lk.ijse.dep7.pos.service.custom.OrderService;
 
@@ -26,7 +27,7 @@ public class OrderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {
-            OrderService orderService = ServiceFactory.getInstance().getService(ServiceType.ORDER);
+            OrderService orderService = AppInitializer.getContext().getBean(OrderService.class);
             String q = req.getParameter("q");
             String id = req.getParameter("id");
             String page = req.getParameter("page");
@@ -110,7 +111,7 @@ public class OrderServlet extends HttpServlet {
                     return;
                 }
             }
-            OrderService orderService = ServiceFactory.getInstance().getService(ServiceType.ORDER);
+            OrderService orderService = AppInitializer.getContext().getBean(OrderService.class);
 
             orderService.saveOrder(order);
             resp.setContentType("application/json");

@@ -1,6 +1,5 @@
 package lk.ijse.dep7.pos.api;
 
-import jakarta.annotation.Resource;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbException;
@@ -9,18 +8,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lk.ijse.dep7.pos.db.DBConnection;
 import lk.ijse.dep7.pos.dto.OrderDTO;
 import lk.ijse.dep7.pos.service.ServiceFactory;
 import lk.ijse.dep7.pos.service.ServiceType;
 import lk.ijse.dep7.pos.service.custom.OrderService;
-import lk.ijse.dep7.pos.service.custom.impl.OrderServiceImpl;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,14 +24,10 @@ public class OrderServlet extends HttpServlet {
 
     private final Jsonb jsonb = JsonbBuilder.create();
 
-    @Resource(name = "java:comp/env/jdbc/posCP")
-    public DataSource connectionPool;
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        try (Connection connection = connectionPool.getConnection()) {
-            DBConnection.setConnection(connection);
+        try {
             OrderService orderService = ServiceFactory.getInstance().getService(ServiceType.ORDER);
             String q = req.getParameter("q");
             String id = req.getParameter("id");
@@ -90,8 +81,7 @@ public class OrderServlet extends HttpServlet {
             return;
         }
 
-        try (Connection connection = connectionPool.getConnection()) {
-            DBConnection.setConnection(connection);
+        try {
             OrderDTO order = jsonb.fromJson(req.getReader(), OrderDTO.class);
 
             if (order.getOrderId() == null || !order.getOrderId().matches("OD\\d{3}")) {

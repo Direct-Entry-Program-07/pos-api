@@ -1,6 +1,6 @@
 package lk.ijse.dep7.pos.dao.custom.impl;
 
-import lk.ijse.dep7.pos.dao.JPAUtil;
+import lk.ijse.dep7.pos.dao.HibernateUtil;
 import lk.ijse.dep7.pos.dao.custom.CustomerDAO;
 import lk.ijse.dep7.pos.entity.Customer;
 import org.hibernate.Session;
@@ -24,7 +24,7 @@ class CustomerDAOImplTest {
 
     @BeforeEach
     void setUp() {
-        sessionFactory = JPAUtil.getSessionFactory();
+        sessionFactory = HibernateUtil.getSessionFactory();
         session = sessionFactory.openSession();
         tx = session.beginTransaction();
         //customerDAO = new CustomerDAOImpl(session);
@@ -39,7 +39,7 @@ class CustomerDAOImplTest {
     @Test
     void save() {
         Customer customer = new Customer("C100", "Kasun", "Galle");
-        assertDoesNotThrow(()-> customerDAO.save(customer));
+        assertDoesNotThrow(() -> customerDAO.save(customer));
     }
 
     @Test
@@ -56,7 +56,7 @@ class CustomerDAOImplTest {
     @Test
     void deleteById() {
         save();
-        assertDoesNotThrow(()-> customerDAO.deleteById("C100"));
+        assertDoesNotThrow(() -> customerDAO.deleteById("C100"));
         assertFalse(customerDAO.findById("C100").isPresent());
     }
 

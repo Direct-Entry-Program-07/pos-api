@@ -2,7 +2,7 @@ package lk.ijse.dep7.pos.service.custom.impl;
 
 import lk.ijse.dep7.pos.dao.DAOFactory;
 import lk.ijse.dep7.pos.dao.DAOType;
-import lk.ijse.dep7.pos.dao.JPAUtil;
+import lk.ijse.dep7.pos.dao.HibernateUtil;
 import lk.ijse.dep7.pos.dao.custom.*;
 import lk.ijse.dep7.pos.dto.OrderDTO;
 import lk.ijse.dep7.pos.dto.OrderDetailDTO;
@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void saveOrder(OrderDTO order) throws Exception {
 
-        try (Session session = JPAUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             orderDAO.setSession(session);
             orderDetailDAO.setSession(session);
             customerDAO.setSession(session);
@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public long getSearchOrdersCount(String query) throws Exception {
-        try (Session session = JPAUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             queryDAO.setSession(session);
 
             return queryDAO.countOrders(query);
@@ -88,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> searchOrders(String query, int page, int size) throws Exception {
-        try (Session session = JPAUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             queryDAO.setSession(session);
 
             return toOrderDTO2(queryDAO.findOrders(query, page, size));
@@ -97,7 +97,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO searchOrder(String orderId) throws Exception {
-        try (Session session = JPAUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             queryDAO.setSession(session);
             customerDAO.setSession(session);
             orderDetailDAO.setSession(session);
@@ -113,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String generateNewOrderId() throws Exception {
-        try (Session session = JPAUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             orderDAO.setSession(session);
 
             String id = orderDAO.getLastOrderId();

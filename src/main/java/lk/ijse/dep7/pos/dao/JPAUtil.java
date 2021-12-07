@@ -11,7 +11,7 @@ public class JPAUtil {
     private static final EntityManagerFactory entityManagerFactory = buildEntityManagerFactory();
 
     private static EntityManagerFactory buildEntityManagerFactory() {
-        InputStream is = JPAUtil.class.getResourceAsStream("application.properties");
+        InputStream is = JPAUtil.class.getResourceAsStream("/application.properties");
         Properties jpaProps = new Properties();
         try {
             jpaProps.load(is);

@@ -1,6 +1,5 @@
 package lk.ijse.dep7.pos.dao.custom.impl;
 
-import lk.ijse.dep7.pos.dao.HibernateUtil;
 import lk.ijse.dep7.pos.dao.custom.CustomerDAO;
 import lk.ijse.dep7.pos.entity.Customer;
 import org.hibernate.Session;

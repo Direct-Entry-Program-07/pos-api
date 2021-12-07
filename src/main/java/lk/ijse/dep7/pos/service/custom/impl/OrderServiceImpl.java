@@ -2,7 +2,6 @@ package lk.ijse.dep7.pos.service.custom.impl;
 
 import lk.ijse.dep7.pos.dao.DAOFactory;
 import lk.ijse.dep7.pos.dao.DAOType;
-import lk.ijse.dep7.pos.dao.HibernateUtil;
 import lk.ijse.dep7.pos.dao.custom.*;
 import lk.ijse.dep7.pos.dto.OrderDTO;
 import lk.ijse.dep7.pos.dto.OrderDetailDTO;

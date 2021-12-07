@@ -4,19 +4,21 @@ import lk.ijse.dep7.pos.dao.JPAUtil;
 import lk.ijse.dep7.pos.dao.custom.ItemDAO;
 import lk.ijse.dep7.pos.dto.ItemDTO;
 import lk.ijse.dep7.pos.service.custom.ItemService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
 import static lk.ijse.dep7.pos.service.util.EntityDTOMapper.*;
 
+@Scope("prototype")
+@Component
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemDAO itemDAO;
-
-    public ItemServiceImpl() {
-        itemDAO = DAOFactory.getInstance().getDAO(DAOType.ITEM);
-    }
+    @Autowired
+    private ItemDAO itemDAO;
 
     @Override
     public void saveItem(ItemDTO item) throws Exception {

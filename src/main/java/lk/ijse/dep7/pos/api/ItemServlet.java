@@ -9,8 +9,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.dep7.pos.dto.ItemDTO;
-import lk.ijse.dep7.pos.service.ServiceFactory;
-import lk.ijse.dep7.pos.service.ServiceType;
 import lk.ijse.dep7.pos.service.custom.ItemService;
 
 import java.io.IOException;

@@ -4,19 +4,21 @@ import lk.ijse.dep7.pos.dao.JPAUtil;
 import lk.ijse.dep7.pos.dao.custom.CustomerDAO;
 import lk.ijse.dep7.pos.dto.CustomerDTO;
 import lk.ijse.dep7.pos.service.custom.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
 import static lk.ijse.dep7.pos.service.util.EntityDTOMapper.*;
 
+@Scope("prototype")
+@Component
 public class CustomerServiceImpl implements CustomerService {
 
-    private final CustomerDAO customerDAO;
-
-    public CustomerServiceImpl() {
-        customerDAO = DAOFactory.getInstance().getDAO(DAOType.CUSTOMER);
-    }
+    @Autowired
+    private CustomerDAO customerDAO;
 
     @Override
     public void saveCustomer(CustomerDTO customer) throws Exception {

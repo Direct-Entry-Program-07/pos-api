@@ -8,10 +8,11 @@ import lk.ijse.dep7.pos.entity.Customer;
 import lk.ijse.dep7.pos.entity.Item;
 import lk.ijse.dep7.pos.entity.Order;
 import lk.ijse.dep7.pos.entity.OrderDetail;
-import lk.ijse.dep7.pos.service.ServiceFactory;
-import lk.ijse.dep7.pos.service.ServiceType;
 import lk.ijse.dep7.pos.service.custom.CustomerService;
 import lk.ijse.dep7.pos.service.custom.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
@@ -19,21 +20,22 @@ import java.util.List;
 
 import static lk.ijse.dep7.pos.service.util.EntityDTOMapper.*;
 
+@Scope("prototype")
+@Component
 public class OrderServiceImpl implements OrderService {
 
-    private final CustomerDAO customerDAO;
-    private final OrderDAO orderDAO;
-    private final OrderDetailDAO orderDetailDAO;
-    private final QueryDAO queryDAO;
-    private final ItemDAO itemDAO;
-
-    public OrderServiceImpl() {
-        this.orderDAO = DAOFactory.getInstance().getDAO(DAOType.ORDER);
-        this.orderDetailDAO = DAOFactory.getInstance().getDAO(DAOType.ORDER_DETAIL);
-        this.queryDAO = DAOFactory.getInstance().getDAO(DAOType.QUERY);
-        this.customerDAO = DAOFactory.getInstance().getDAO(DAOType.CUSTOMER);
-        this.itemDAO = DAOFactory.getInstance().getDAO(DAOType.ITEM);
-    }
+    @Autowired
+    private CustomerDAO customerDAO;
+    @Autowired
+    private OrderDAO orderDAO;
+    @Autowired
+    private OrderDetailDAO orderDetailDAO;
+    @Autowired
+    private QueryDAO queryDAO;
+    @Autowired
+    private ItemDAO itemDAO;
+    @Autowired
+    private CustomerService customerService;
 
     @Override
     public void saveOrder(OrderDTO order) throws Exception {
@@ -45,7 +47,6 @@ public class OrderServiceImpl implements OrderService {
             customerDAO.setEntityManager(em);
             itemDAO.setEntityManager(em);
 
-            final CustomerService customerService = ServiceFactory.getInstance().getService(ServiceType.CUSTOMER);
             final String orderId = order.getOrderId();
             final String customerId = order.getCustomerId();
 

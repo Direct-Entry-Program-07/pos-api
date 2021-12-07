@@ -12,17 +12,17 @@ import java.util.Optional;
 public class OrderDetailDAOImpl extends CrudDAOImpl<OrderDetail, OrderDetailPK> implements OrderDetailDAO {
 
     @Override
-    public Optional<BigDecimal> findOrderTotal(String orderId) throws Exception {
-        BigDecimal total = (BigDecimal) session.
+    public Optional<BigDecimal> findOrderTotal(String orderId)  {
+        BigDecimal total = (BigDecimal) em.
                 createNativeQuery("SELECT SUM(unit_price * qty) as total FROM order_detail WHERE order_id=?1 GROUP BY order_id;")
-                .setParameter(1, orderId).uniqueResult();
+                .setParameter(1, orderId).getSingleResult();
         return (total == null) ? Optional.empty() : Optional.of(total);
     }
 
     @Override
-    public List<OrderDetail> findOrderDetailsByOrderId(String orderId) throws Exception {
-        return session.createNativeQuery("SELECT * FROM `order_detail` WHERE order_id =?1")
-                .setParameter(1, orderId).addEntity(OrderDetail.class).list();
+    public List<OrderDetail> findOrderDetailsByOrderId(String orderId)  {
+        return em.createNativeQuery("SELECT * FROM `order_detail` WHERE order_id =?1", OrderDetail.class)
+                .setParameter(1, orderId).getResultList();
     }
 
 }

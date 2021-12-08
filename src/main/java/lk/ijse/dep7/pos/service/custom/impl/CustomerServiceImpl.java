@@ -6,13 +6,14 @@ import lk.ijse.dep7.pos.service.custom.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static lk.ijse.dep7.pos.service.util.EntityDTOMapper.*;
 
-@Scope("prototype")
+@Transactional
 @Component
 public class CustomerServiceImpl implements CustomerService {
 
@@ -21,135 +22,68 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void saveCustomer(CustomerDTO customer) throws Exception {
-        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
-        try {
-            customerDAO.setEntityManager(em);
-            em.getTransaction().begin();
-
-            if (existCustomer(customer.getId())) {
-                throw new RuntimeException(customer.getId() + " already exists");
-            }
-            customerDAO.save(fromCustomerDTO(customer));
-
-            em.getTransaction().commit();
-        } finally {
-            em.close();
+        if (existCustomer(customer.getId())) {
+            throw new RuntimeException(customer.getId() + " already exists");
         }
+        customerDAO.save(fromCustomerDTO(customer));
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     @Override
     public long getCustomersCount() throws Exception {
-        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
-        try {
-            customerDAO.setEntityManager(em);
-
-            return customerDAO.count();
-        } finally {
-            em.close();
-        }
+        return customerDAO.count();
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     @Override
     public boolean existCustomer(String id) throws Exception {
-        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
-        try {
-            customerDAO.setEntityManager(em);
-
-            return customerDAO.existsById(id);
-        } finally {
-            em.close();
-        }
+        return customerDAO.existsById(id);
     }
 
     @Override
     public void updateCustomer(CustomerDTO customer) throws Exception {
-        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
-        try {
-            customerDAO.setEntityManager(em);
-            em.getTransaction().begin();
-
-            if (!existCustomer(customer.getId())) {
-                throw new RuntimeException("There is no such customer associated with the id " + customer.getId());
-            }
-            customerDAO.update(fromCustomerDTO(customer));
-
-            em.getTransaction().commit();
-        } finally {
-            em.close();
+        if (!existCustomer(customer.getId())) {
+            throw new RuntimeException("There is no such customer associated with the id " + customer.getId());
         }
+        customerDAO.update(fromCustomerDTO(customer));
     }
 
     @Override
     public void deleteCustomer(String id) throws Exception {
-        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
-        try {
-            customerDAO.setEntityManager(em);
-            em.getTransaction().begin();
-
-            if (!existCustomer(id)) {
-                throw new RuntimeException("There is no such customer associated with the id " + id);
-            }
-            customerDAO.deleteById(id);
-
-            em.getTransaction().commit();
-        } finally {
-            em.close();
+        if (!existCustomer(id)) {
+            throw new RuntimeException("There is no such customer associated with the id " + id);
         }
+        customerDAO.deleteById(id);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     @Override
     public CustomerDTO findCustomer(String id) throws Exception {
-        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
-        try {
-            customerDAO.setEntityManager(em);
-
-            return toCustomerDTO(customerDAO.findById(id).orElseThrow(() -> new RuntimeException("There is no such customer associated with the id " + id)));
-        } finally {
-            em.close();
-        }
+        return toCustomerDTO(customerDAO.findById(id).orElseThrow(() -> new RuntimeException("There is no such customer associated with the id " + id)));
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     @Override
     public List<CustomerDTO> findAllCustomers() throws Exception {
-        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
-        try {
-            customerDAO.setEntityManager(em);
-
-            return toCustomerDTOList(customerDAO.findAll());
-        } finally {
-            em.close();
-        }
+        return toCustomerDTOList(customerDAO.findAll());
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     @Override
     public List<CustomerDTO> findAllCustomers(int page, int size) throws Exception {
-        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
-        try {
-            customerDAO.setEntityManager(em);
-
-            return toCustomerDTOList(customerDAO.findAll(page, size));
-        } finally {
-            em.close();
-        }
+        return toCustomerDTOList(customerDAO.findAll(page, size));
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     @Override
     public String generateNewCustomerId() throws Exception {
-        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
-        try {
-            customerDAO.setEntityManager(em);
-
-            String id = customerDAO.getLastCustomerId();
-            if (id != null) {
-                int newCustomerId = Integer.parseInt(id.replace("C", "")) + 1;
-                return String.format("C%03d", newCustomerId);
-            } else {
-                return "C001";
-            }
-        } finally {
-            em.close();
+        String id = customerDAO.getLastCustomerId();
+        if (id != null) {
+            int newCustomerId = Integer.parseInt(id.replace("C", "")) + 1;
+            return String.format("C%03d", newCustomerId);
+        } else {
+            return "C001";
         }
-
     }
 
 }

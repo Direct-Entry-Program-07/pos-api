@@ -1,6 +1,5 @@
 package lk.ijse.dep7.pos.service.custom.impl;
 
-import lk.ijse.dep7.pos.dao.JPAUtil;
 import lk.ijse.dep7.pos.dao.custom.CustomerDAO;
 import lk.ijse.dep7.pos.dto.CustomerDTO;
 import lk.ijse.dep7.pos.service.custom.CustomerService;

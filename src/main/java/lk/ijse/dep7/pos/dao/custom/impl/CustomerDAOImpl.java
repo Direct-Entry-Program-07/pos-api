@@ -6,7 +6,6 @@ import lk.ijse.dep7.pos.entity.Customer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Scope("prototype")
 @Component
 public class CustomerDAOImpl extends CrudDAOImpl<Customer, String> implements CustomerDAO {
 

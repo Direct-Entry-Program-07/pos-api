@@ -4,6 +4,7 @@ import lk.ijse.dep7.pos.entity.SuperEntity;
 import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
@@ -18,6 +19,7 @@ public abstract class CrudDAOImpl<T extends SuperEntity, ID extends Serializable
         entityClzObj = (Class<T>)(((ParameterizedType)(this.getClass().getGenericSuperclass())).getActualTypeArguments()[0]);
     }
 
+    @PersistenceContext
     @Override
     public void setEntityManager(EntityManager em) {
         this.em = em;

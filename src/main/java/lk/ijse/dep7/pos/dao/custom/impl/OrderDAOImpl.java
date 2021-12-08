@@ -6,7 +6,6 @@ import lk.ijse.dep7.pos.entity.Order;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Scope("prototype")
 @Component
 public class OrderDAOImpl extends CrudDAOImpl<Order, String> implements OrderDAO {
 

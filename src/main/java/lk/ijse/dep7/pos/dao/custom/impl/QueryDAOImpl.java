@@ -5,23 +5,23 @@ import lk.ijse.dep7.pos.entity.CustomEntity;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.Transformers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Scope("prototype")
 @Component
 public class QueryDAOImpl implements QueryDAO {
 
     private EntityManager em;
 
+    @PersistenceContext
     @Override
     public void setEntityManager(EntityManager em) {
         this.em = em;

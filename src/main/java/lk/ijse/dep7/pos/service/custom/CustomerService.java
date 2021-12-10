@@ -7,22 +7,22 @@ import java.util.List;
 
 public interface CustomerService extends SuperService {
 
-    void saveCustomer(CustomerDTO customer) throws Exception;
+    void saveCustomer(CustomerDTO customer) ;
 
-    long getCustomersCount() throws Exception;
+    long getCustomersCount() ;
 
-    boolean existCustomer(String id) throws Exception;
+    boolean existCustomer(String id) ;
 
-    void updateCustomer(CustomerDTO customer) throws Exception;
+    void updateCustomer(CustomerDTO customer) ;
 
-    void deleteCustomer(String id) throws Exception;
+    void deleteCustomer(String id) ;
 
-    CustomerDTO findCustomer(String id) throws Exception;
+    CustomerDTO findCustomer(String id) ;
 
-    List<CustomerDTO> findAllCustomers() throws Exception;
+    List<CustomerDTO> findAllCustomers() ;
 
-    List<CustomerDTO> findAllCustomers(int page, int size) throws Exception;
+    List<CustomerDTO> findAllCustomers(int page, int size) ;
 
-    String generateNewCustomerId() throws Exception;
+    String generateNewCustomerId() ;
 
 }

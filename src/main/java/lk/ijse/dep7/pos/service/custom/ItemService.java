@@ -7,19 +7,21 @@ import java.util.List;
 
 public interface ItemService extends SuperService {
 
-    void saveItem(ItemDTO item) throws Exception;
+    void saveItem(ItemDTO item) ;
 
-    boolean existItem(String code) throws Exception;
+    long getItemsCount() ;
 
-    void updateItem(ItemDTO item) throws Exception;
+    boolean existItem(String code) ;
 
-    void deleteItem(String code) throws Exception;
+    void updateItem(ItemDTO item) ;
 
-    ItemDTO findItem(String code) throws Exception;
+    void deleteItem(String code) ;
 
-    List<ItemDTO> findAllItems() throws Exception;
+    ItemDTO findItem(String code) ;
 
-    List<ItemDTO> findAllItems(int page, int size) throws Exception;
+    List<ItemDTO> findAllItems() ;
 
-    String generateNewItemCode() throws Exception;
+    List<ItemDTO> findAllItems(int page, int size) ;
+
+    String generateNewItemCode() ;
 }

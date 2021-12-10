@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,7 +102,7 @@ public class QueryDAOImpl implements QueryDAO {
             nativeQuery.setParameter(i + 1, "%" + searchWords[(i / 4)] + "%");
         }
 
-        return (long) nativeQuery.getSingleResult();
+        return ((BigInteger) nativeQuery.getSingleResult()).longValue();
     }
 
     @Override

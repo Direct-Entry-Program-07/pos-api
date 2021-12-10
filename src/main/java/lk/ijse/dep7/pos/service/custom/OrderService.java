@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface OrderService extends SuperService {
 
-    void saveOrder(OrderDTO order) throws Exception;
+    void saveOrder(OrderDTO order) ;
 
-    long getSearchOrdersCount(String query) throws Exception;
+    long getSearchOrdersCount(String query) ;
 
-    List<OrderDTO> searchOrders(String query, int page, int size) throws Exception;
+    List<OrderDTO> searchOrders(String query, int page, int size) ;
 
-    OrderDTO searchOrder(String orderId) throws Exception;
+    OrderDTO searchOrder(String orderId) ;
 
-    String generateNewOrderId() throws Exception;
+    String generateNewOrderId() ;
 }

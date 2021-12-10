@@ -1,5 +1,13 @@
 package lk.ijse.dep7.pos.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import org.eclipse.yasson.internal.serializer.LocalDateTimeTypeSerializer;
+import org.eclipse.yasson.internal.serializer.LocalDateTypeSerializer;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -8,6 +16,9 @@ import java.util.List;
 
 public class OrderDTO implements Serializable {
     private String orderId;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate orderDate;
     private String customerId;
     private String customerName;

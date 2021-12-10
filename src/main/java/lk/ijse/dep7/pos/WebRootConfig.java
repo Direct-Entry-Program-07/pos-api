@@ -9,7 +9,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @Import(JPAConfig.class)
 @ComponentScan
 @Configuration
-public class AppConfig {
+public class WebRootConfig {
 
     @Bean
     public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){

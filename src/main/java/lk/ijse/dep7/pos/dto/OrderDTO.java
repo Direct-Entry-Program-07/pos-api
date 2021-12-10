@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import org.eclipse.yasson.internal.serializer.LocalDateTimeTypeSerializer;
-import org.eclipse.yasson.internal.serializer.LocalDateTypeSerializer;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
